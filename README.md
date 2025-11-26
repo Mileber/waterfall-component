@@ -1,7 +1,6 @@
 # waterfall-component
 
-[![NPM Version](https://img.shields.io/npm/v/waterfall-component.svg)](https://www.npmjs.com/package/waterfall-component)
-[![License](https://img.shields.io/npm/l/waterfall-component.svg)](https://github.com/Mileber/waterfall-component/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/v/waterfall-component-vue2)](https://www.npmjs.com/package/waterfall-component-vue2) [![npm](https://img.shields.io/npm/v/waterfall-component-vue3)](https://www.npmjs.com/package/waterfall-component-vue3)
 
 高性能瀑布流布局组件，支持 Vue2 和 Vue3 版本，具有虚拟滚动和图片懒加载功能。
 
