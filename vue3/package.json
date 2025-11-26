@@ -1,5 +1,5 @@
 {
-  "name": "waterfall-component-vue3",
+  "name": "@mileber/waterfall-component-vue3",
   "version": "0.1.0",
   "description": "高性能瀑布流布局组件 Vue3 版本，支持横向和纵向布局，具有虚拟滚动和图片懒加载功能",
   "main": "dist/index.js",
