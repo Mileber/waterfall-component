@@ -1,8 +1,16 @@
-# waterfall-component [![npm](https://img.shields.io/npm/v/waterfall-component-vue2)](https://www.npmjs.com/package/waterfall-component-vue2) [![npm](https://img.shields.io/npm/v/waterfall-component-vue3)](https://www.npmjs.com/package/waterfall-component-vue3)
+# zyt-waterfall
 
-一个支持横向和纵向布局的高性能瀑布流公共组件，同时提供 Vue2 与 Vue3 两个版本。
+[![NPM Version](https://img.shields.io/npm/v/zyt-waterfall.svg)](https://www.npmjs.com/package/zyt-waterfall)
+[![License](https://img.shields.io/npm/l/zyt-waterfall.svg)](https://github.com/Mileber/waterfall-component/blob/master/LICENSE)
 
-## 功能特性
+高性能瀑布流布局组件，支持 Vue2 和 Vue3 版本，具有虚拟滚动和图片懒加载功能。
+
+## 在线演示
+
+- [Vue3 版本演示](https://mileber.github.io/waterfall-component/vue3/)
+- [Vue2 版本演示](https://mileber.github.io/waterfall-component/vue2/)
+
+## 特性
 
 - 🔄 横向（Justified）与纵向（Masonry）两种布局
 - ⚡ 虚拟滚动，仅渲染视窗附近元素
