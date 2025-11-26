@@ -17,14 +17,14 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
       # Ensure npm is up to date
       - name: Update npm
         run: npm install -g npm@latest
         
-      - run: npm ci
+      - run: npm install
       - run: npm run build --if-present
       
       # Run tests before publishing
@@ -35,12 +35,12 @@ jobs:
         run: |
           # 检查包是否已经存在
           echo "Checking if packages already exist on npm..."
-          if npm view @mileber/waterfall-component-vue2@${{ github.ref_name }} version >/dev/null 2>&1; then
-            echo "@mileber/waterfall-component-vue2 version ${{ github.ref_name }} already exists"
+          if npm view waterfall-component-vue2@${{ github.ref_name }} version >/dev/null 2>&1; then
+            echo "waterfall-component-vue2 version ${{ github.ref_name }} already exists"
             exit 1
           fi
-          if npm view @mileber/waterfall-component-vue3@${{ github.ref_name }} version >/dev/null 2>&1; then
-            echo "@mileber/waterfall-component-vue3 version ${{ github.ref_name }} already exists"
+          if npm view waterfall-component-vue3@${{ github.ref_name }} version >/dev/null 2>&1; then
+            echo "waterfall-component-vue3 version ${{ github.ref_name }} already exists"
             exit 1
           fi
           
@@ -48,8 +48,8 @@ jobs:
       - name: Publish Vue2 package
         run: |
           cd vue2
-          echo "Publishing @mileber/waterfall-component-vue2..."
-          npm publish --access public
+          echo "Publishing waterfall-component-vue2..."
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           
@@ -57,8 +57,8 @@ jobs:
       - name: Publish Vue3 package
         run: |
           cd ../vue3
-          echo "Publishing @mileber/waterfall-component-vue3..."
-          npm publish --access public
+          echo "Publishing waterfall-component-vue3..."
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           
@@ -79,12 +79,12 @@ jobs:
             
             For Vue2:
             ```bash
-            npm install @mileber/waterfall-component-vue2
+            npm install waterfall-component-vue2
             ```
             
             For Vue3:
             ```bash
-            npm install @mileber/waterfall-component-vue3
+            npm install waterfall-component-vue3
             ```
           draft: false
           prerelease: false
