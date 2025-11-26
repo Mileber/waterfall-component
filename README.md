@@ -1,7 +1,7 @@
-# zyt-waterfall
+# waterfall-component
 
-[![NPM Version](https://img.shields.io/npm/v/zyt-waterfall.svg)](https://www.npmjs.com/package/zyt-waterfall)
-[![License](https://img.shields.io/npm/l/zyt-waterfall.svg)](https://github.com/Mileber/waterfall-component/blob/master/LICENSE)
+[![NPM Version](https://img.shields.io/npm/v/waterfall-component.svg)](https://www.npmjs.com/package/waterfall-component)
+[![License](https://img.shields.io/npm/l/waterfall-component.svg)](https://github.com/Mileber/waterfall-component/blob/master/LICENSE)
 
 高性能瀑布流布局组件，支持 Vue2 和 Vue3 版本，具有虚拟滚动和图片懒加载功能。
 
@@ -259,8 +259,8 @@ methods: {
 
 - 方式一：路径依赖（推荐，简洁直连源码包）
   - 在业务项目的 `package.json` 写入：
-    - Vue3：`"waterfall-component-vue3": "file:../zyt-waterfall/vue3"`
-    - Vue2：`"waterfall-component-vue2": "file:../zyt-waterfall/vue2"`
+    - Vue3：`"waterfall-component-vue3": "file:../waterfall-component/vue3"`
+    - Vue2：`"waterfall-component-vue2": "file:../waterfall-component/vue2"`
   - 然后在业务项目执行：`npm install`
   - 注意：业务项目自行安装匹配的 `vue` 主版本（Vue3 或 Vue2）
 
@@ -269,7 +269,7 @@ methods: {
   - 进入对应子包目录：
     - Vue3：`cd vue3 && npm pack`（生成 `waterfall-component-vue3-<version>.tgz`）
     - Vue2：`cd vue2 && npm pack`（生成 `waterfall-component-vue2-<version>.tgz`）
-  - 在业务项目执行：`npm i ../zyt-waterfall/vue3/waterfall-component-vue3-<version>.tgz`
+  - 在业务项目执行：`npm i ../waterfall-component/vue3/waterfall-component-vue3-<version>.tgz`
 
 - 方式三：本地链接（开发联调）
   - 在组件子包中：
