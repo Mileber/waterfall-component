@@ -1,6 +1,6 @@
 {
   "name": "waterfall-component-vue2",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "高性能瀑布流布局组件 Vue2 版本，支持横向和纵向布局，具有虚拟滚动和图片懒加载功能",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -29,20 +29,7 @@
   "bugs": {
     "url": "https://github.com/Mileber/waterfall-component/issues"
   },
-  "peerDependencies": { 
-    "vue": "^2.6.0" 
-  },
-  "peerDependenciesMeta": {
-    "vue": { 
-      "optional": true 
-    }
-  },
-  "sideEffects": false,
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js",
-      "import": "./dist/index.esm.js"
-    }
+  "peerDependencies": {
+    "vue": "^2.6.14"
   }
 }
