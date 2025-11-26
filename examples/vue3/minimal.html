@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Vue3 Waterfall Minimal</title>
+  <link rel="stylesheet" href="../../vue3/dist/index.esm.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "vue": "https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="app" style="display:flex; gap:16px; padding:16px">
+    <section id="box" style="flex:1; height:70vh; overflow:auto; border:1px solid #eee">
+      <waterfall-component
+        :items="items"
+        :has-more="hasMore"
+        :auto-load="true"
+        :io-root="'#box'"
+        direction="horizontal"
+        :row-height="180"
+        :gutter="12"
+        :items-per-page="pageSize"
+        :max-rows-per-render="5"
+        :buffer-factor="2"
+        :io-root-margin="'0px 0px 400px 0px'"
+        :io-threshold="0"
+        @load-more="loadMore"
+        @render-end="onRenderEnd"
+        style="width:100%"
+      >
+        <template #default="{ item }">
+          <div style="position:relative;width:100%;height:100%">
+            <img :src="item.cover" style="width:100%;height:100%;object-fit:cover" />
+            <span style="position:absolute;left:6px;top:6px;background:rgba(0,0,0,0.6);color:#fff;padding:2px 6px;border-radius:4px;font-size:12px;line-height:1">#{{ item.id }}</span>
+          </div>
+        </template>
+      </waterfall-component>
+    </section>
+    <aside style="width:220px; display:flex; flex-direction:column; gap:8px">
+      <button @click="loadMore()">手动加载</button>
+      <div>条数：{{ items.length }}</div>
+      <div>hasMore：{{ hasMore }}</div>
+    </aside>
+  </div>
+  <script type="module">
+    import { createApp } from 'vue'
+    import WaterfallComponent from '../../vue3/dist/index.esm.js'
+    function rand(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min }
+    function svg(id, w, h){ const color = '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'); const s = encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="${w}" height="${h}" fill="${color}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="36">${id}</text></svg>`); return `data:image/svg+xml,${s}` }
+    function create(base, count){ return Array.from({ length: count }).map((_,i) => { const id = base + i; const w = rand(300, 800); const h = rand(200, 600); return { id, width: w, height: h, cover: svg(id, w, h) } }) }
+    const App = {
+      components: { WaterfallComponent },
+      data(){ return { items: [], hasMore: true, pageSize: 20 } },
+      created(){ this.loadMore() },
+      methods: {
+        loadMore(){ console.log("load");if (!this.hasMore) return; const base = this.items.length; const more = create(base, this.pageSize); this.items = this.items.concat(more) },
+        onRenderEnd(){ const root = document.querySelector('#box'); if (!root) return; const st = root.scrollTop; const wh = root.clientHeight; const sh = root.scrollHeight; if ((st + wh + 400) >= sh) this.loadMore() }
+      }
+    }
+    createApp(App).mount('#app')
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,19 @@
+{
+  "name": "waterfall-component-vue3",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "peerDependencies": { "vue": "^3.2.0" },
+  "peerDependenciesMeta": {
+    "vue": { "optional": true }
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.esm.js"
+    }
+  }
+}

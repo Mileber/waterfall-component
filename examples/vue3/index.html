@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Vue3 Waterfall Demo</title>
+  <link rel="stylesheet" href="./dist/index.esm.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "vue": "https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.js"
+    }
+  }
+  </script>
+  <script type="module">
+    import { createApp } from 'vue'
+    import WaterfallComponent from './dist/index.esm.js'
+    function rand(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min }
+    function makeSvg(id, w, h){ const color = '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'); const svg = encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="${w}" height="${h}" fill="${color}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-size="48">${id}</text></svg>`); return `data:image/svg+xml,${svg}` }
+    function createItems(base, count, urls){ const list=[]; if (urls && urls.length){ for(let i=0;i<count;i++){ const id=base+i; const url=urls[id % urls.length]; list.push({ id, cover: url }) } return list } return Array.from({ length: count }).map((_,i) => { const id=base+i; const w=rand(300,800); const h=rand(200,600); return { id, width:w, height:h, cover: makeSvg(id,w,h) } }) }
+    const App = {
+      components: { WaterfallComponent },
+      data(){ return { 
+        items: [], hasMore: true,
+        config: {
+          direction: 'horizontal', gutter: 12, rowHeight: 180, maxItems: 5, minRowFillRatio: 0.85, alignLastRow: 'center',
+          columnWidth: 220, maxColumns: 5, fixedColumns: false,
+          itemsPerPage: 20, maxRowsPerRender: 5, overscan: 2, bufferFactor: 2,
+          clampAspectMin: 0, clampAspectMax: 3,
+          width: '', height: '', autoLoad: true,
+          ioRootMargin: '0px 0px 400px 0px', ioThreshold: 0,
+          customUrls: ''
+        }
+      } },
+      created(){ this.loadMore() },
+      methods: {
+        loadMore(){ console.log("load");const base = this.items.length; const urls = (this.config.customUrls || '').split(/\n+/).map(s => s.trim()).filter(Boolean); const more = createItems(base, this.config.itemsPerPage || 20, urls); this.items = this.items.concat(more); if (this.items.length > 200) this.hasMore = false },
+        apply(){ this.resetAndLoad() },
+        resetAndLoad(){ this.items = []; this.hasMore = true; this.$nextTick(() => this.loadMore()) },
+        configKey(){ const c = this.config; return [c.direction,c.rowHeight,c.columnWidth,c.maxItems,c.maxColumns,c.alignLastRow,c.fixedColumns,c.gutter,c.clampAspectMin,c.clampAspectMax,c.width,c.height,c.autoLoad,c.ioRootMargin,c.ioThreshold].join('|') },
+        onRenderStart(tag){ return () => console.log(tag, 'renderStart') },
+        onRenderEnd(tag){ return () => console.log(tag, 'renderEnd') },
+        onResize(tag, e){ console.log(tag, 'resize', e) },
+        onItemError(tag, e){ console.warn(tag, 'error', e) }
+      },
+      template: `
+      <div class="demo">
+        <aside class="sidebar">
+          <h3>配置项 Settings</h3>
+          <div class="field">
+            <label>方向 Direction</label>
+            <select v-model="config.direction" @change="apply()">
+              <option value="horizontal">horizontal（横向）</option>
+              <option value="vertical">vertical（纵向）</option>
+            </select>
+          </div>
+          <div class="field"><label>间距 gutter</label><input type="number" v-model.number="config.gutter" /></div>
+          <div class="field" v-if="config.direction==='horizontal'"><label>行高 rowHeight</label><input type="number" v-model.number="config.rowHeight" /></div>
+          <div class="field" v-if="config.direction==='horizontal'"><label>每行最大项数 maxItems</label><input type="number" v-model.number="config.maxItems" /></div>
+          <div class="field" v-if="config.direction==='horizontal'"><label>末行填充比例 minRowFillRatio</label><input type="number" step="0.01" v-model.number="config.minRowFillRatio" /></div>
+          <div class="field" v-if="config.direction==='horizontal'"><label>末行对齐 alignLastRow</label><select v-model="config.alignLastRow"><option value="stretch">stretch（拉伸）</option><option value="center">center（居中）</option><option value="left">left（靠左）</option></select></div>
+          <div class="field" v-if="config.direction==='vertical'"><label>列宽 columnWidth</label><input type="number" v-model.number="config.columnWidth" /></div>
+          <div class="field" v-if="config.direction==='vertical'"><label>最大列数 maxColumns</label><input type="number" v-model.number="config.maxColumns" /></div>
+          <div class="field" v-if="config.direction==='vertical'"><label><input type="checkbox" v-model="config.fixedColumns" /> 固定列数 Fixed columns</label></div>
+          <div class="field"><label>每页条数 itemsPerPage</label><input type="number" v-model.number="config.itemsPerPage" /></div>
+          <div class="field"><label>单次渲染最大行数 maxRowsPerRender</label><input type="number" v-model.number="config.maxRowsPerRender" /></div>
+          <div class="field"><label>额外可视区域 overscan</label><input type="number" v-model.number="config.overscan" /></div>
+          <div class="field"><label>缓冲系数 bufferFactor</label><input type="number" v-model.number="config.bufferFactor" /></div>
+          <div class="field"><label>最小宽高比 clampAspectMin</label><input type="number" step="0.01" v-model.number="config.clampAspectMin" /></div>
+          <div class="field"><label>最大宽高比 clampAspectMax</label><input type="number" step="0.01" v-model.number="config.clampAspectMax" /></div>
+          <div class="field"><label>容器宽/高 Container width/height</label><input type="text" v-model="config.width" placeholder="如 1000px 或空" /><input type="text" v-model="config.height" placeholder="如 600px 或空" /></div>
+          <div class="field"><label>自定义图片URL列表（每行一个）</label><textarea v-model="config.customUrls" rows="6" placeholder="例如：https://image-cdn.tuchong.com/weili/image/ml/785165531245707279.jpeg\n..."></textarea></div>
+          <div class="field"><label><input type="checkbox" v-model="config.autoLoad" @change="apply()" /> 自动滚动加载 Auto load on scroll</label></div>
+          <div class="field"><label>观察根边距 IO rootMargin</label><input type="text" v-model="config.ioRootMargin" placeholder="如 0px 0px 400px 0px" /></div>
+          <div class="field"><label>观察阈值 IO threshold</label><input type="number" step="0.1" v-model.number="config.ioThreshold" /></div>
+          <div class="actions"><button @click="apply()">应用</button><button @click="resetAndLoad()">重置数据</button><button @click="loadMore()">加载更多</button></div>
+        </aside>
+        <section class="preview" id="preview-scroll">
+          <waterfall-component
+            :key="configKey()"
+            :items="items"
+            :has-more="hasMore"
+            :auto-load="config.autoLoad"
+            :io-root="'#preview-scroll'"
+            :direction="config.direction"
+            :row-height="config.rowHeight"
+            :gutter="config.gutter"
+            :max-items="config.maxItems"
+            :min-row-fill-ratio="config.minRowFillRatio"
+            :align-last-row="config.alignLastRow"
+            :column-width="config.columnWidth"
+            :max-columns="config.maxColumns"
+            :fixed-columns="config.fixedColumns"
+            :items-per-page="config.itemsPerPage"
+            :max-rows-per-render="config.maxRowsPerRender"
+            :overscan="config.overscan"
+            :buffer-factor="config.bufferFactor"
+            :clamp-aspect-min="config.clampAspectMin"
+            :clamp-aspect-max="config.clampAspectMax"
+            :width="config.width"
+            :height="config.height"
+            :io-root-margin="config.ioRootMargin"
+            :io-threshold="config.ioThreshold"
+            @render-start="onRenderStart(config.direction)"
+            @render-end="onRenderEnd(config.direction)"
+            @resize="onResize(config.direction, $event)"
+            @error="onItemError(config.direction, $event)"
+            @load-more="loadMore"
+            style="width:100%"
+          >
+            <template #header><h3>瀑布流预览（{{ config.direction }}）</h3></template>
+            <template #default="{ item }">
+              <div style="position:relative;width:100%;height:100%">
+                <img :src="item.cover" style="width:100%;height:100%;object-fit:cover" />
+                <span style="position:absolute;left:6px;top:6px;background:rgba(0,0,0,0.6);color:#fff;padding:2px 6px;border-radius:4px;font-size:12px;line-height:1">#{{ item.id }}</span>
+              </div>
+            </template>
+          </waterfall-component>
+        </section>
+      </div>
+      `
+    }
+    createApp(App).mount('#app')
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <style>
+    .demo{ display:flex; gap:16px; padding:16px }
+    .sidebar{ width:320px; border-right:1px solid #eee; padding-right:12px }
+    .sidebar .field{ margin-bottom:10px; display:flex; flex-direction:column }
+    .sidebar .actions{ display:flex; gap:8px; margin-top:10px }
+    .preview{ flex:1; height:calc(100vh - 32px); overflow:auto }
+  </style>
+</body>
+</html>

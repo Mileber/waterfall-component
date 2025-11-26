@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Vue2 Waterfall Minimal Demo</title>
+  <link rel="stylesheet" href="./dist/index.css" />
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="./dist/index.umd.js"></script>
+</head>
+<body>
+  <div id="app" class="demo">
+    <aside class="sidebar">
+      <button @click="loadMore">Load More</button>
+      <button @click="reset">Reset</button>
+    </aside>
+  </div>
+  <script>
+    const Vue = window.Vue
+    const WaterfallComponent = window.WaterfallComponent.default
+    function rand(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min }
+    function svg(id, w, h){ const color = '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'); const s = encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="${w}" height="${h}" fill="${color}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="36">${id}</text></svg>`); return `data:image/svg+xml,${s}` }
+    function create(base, count){ return Array.from({ length: count }).map((_,i) => { const id = base + i; const w = rand(300, 800); const h = rand(200, 600); return { id, width: w, height: h, cover: svg(id, w, h) } }) }
+    new Vue({
+      el: '#app',
+      components: { WaterfallComponent },
+      data: () => ({ items: [] }),
+      created(){ this.loadMore() },
+      methods: {
+        loadMore(){ const base = this.items.length; const more = create(base, 20); this.items = this.items.concat(more) },
+        reset(){ this.items = []; this.$nextTick(() => this.loadMore()) }
+      },
+      template: `
+        <div style="height:100vh">
+          <waterfall-component :items="items" :row-height="180" :gutter="12" @load-more="loadMore" style="width:100%;height:100%">
+            <template v-slot="{ item }">
+              <img :src="item.cover" style="width:100%;height:100%;object-fit:cover" />
+            </template>
+          </waterfall-component>
+        </div>`
+    })
+  </script>
+</body>
+</html>
