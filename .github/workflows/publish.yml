@@ -1,26 +1,36 @@
-name: Publish to npm and Create Release
+name: Publish Package
 
 on:
   push:
     tags:
       - 'v*'
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          registry-url: https://registry.npmjs.org/
-          
-      - run: npm install
-      
-      - name: Build packages
-        run: npm run build
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Ensure npm is up to date
+      - name: Update npm
+        run: npm install -g npm@latest
         
+      - run: npm ci
+      - run: npm run build --if-present
+      
+      # Run tests before publishing
+      - run: npm test
+      
+      # Check if packages already exist
       - name: Check if packages already exist
         run: |
           # 检查包是否已经存在
@@ -34,6 +44,7 @@ jobs:
             exit 1
           fi
           
+      # Publish Vue2 package
       - name: Publish Vue2 package
         run: |
           cd vue2
@@ -42,6 +53,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           
+      # Publish Vue3 package
       - name: Publish Vue3 package
         run: |
           cd ../vue3
@@ -50,6 +62,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           
+      # Create GitHub Release
       - name: Create GitHub Release
         uses: actions/create-release@v1
         env:
