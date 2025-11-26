@@ -21,7 +21,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Mileber/waterfall-component.git"
+    "url": "git+https://github.com/Mileber/waterfall-component.git"
   },
   "homepage": "https://github.com/Mileber/waterfall-component#readme",
   "bugs": {

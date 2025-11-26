@@ -21,9 +21,23 @@ jobs:
       - name: Build packages
         run: npm run build
         
+      - name: Check if packages already exist
+        run: |
+          # 检查包是否已经存在
+          echo "Checking if packages already exist on npm..."
+          if npm view waterfall-component-vue2@${{ github.ref_name }} version >/dev/null 2>&1; then
+            echo "waterfall-component-vue2 version ${{ github.ref_name }} already exists"
+            exit 1
+          fi
+          if npm view waterfall-component-vue3@${{ github.ref_name }} version >/dev/null 2>&1; then
+            echo "waterfall-component-vue3 version ${{ github.ref_name }} already exists"
+            exit 1
+          fi
+          
       - name: Publish Vue2 package
         run: |
           cd vue2
+          echo "Publishing waterfall-component-vue2..."
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -31,14 +45,16 @@ jobs:
       - name: Publish Vue3 package
         run: |
           cd ../vue3
+          echo "Publishing waterfall-component-vue3..."
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           
       - name: Create GitHub Release
         uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: |
