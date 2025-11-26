@@ -1,0 +1,62 @@
+name: Publish to npm and Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: https://registry.npmjs.org/
+          
+      - run: npm install
+      
+      - name: Build packages
+        run: npm run build
+        
+      - name: Publish Vue2 package
+        run: |
+          cd vue2
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
+      - name: Publish Vue3 package
+        run: |
+          cd ../vue3
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ## Changes
+            
+            See [README.md](https://github.com/Mileber/waterfall-component/blob/master/README.md) for detailed documentation.
+            
+            ## Installation
+            
+            For Vue2:
+            ```bash
+            npm install waterfall-component-vue2
+            ```
+            
+            For Vue3:
+            ```bash
+            npm install waterfall-component-vue3
+            ```
+          draft: false
+          prerelease: false
