@@ -7,7 +7,7 @@ on:
 
 permissions:
   id-token: write  # Required for OIDC
-  contents: read
+  contents: write  # Changed from read to write for creating releases
 
 jobs:
   publish:
@@ -35,12 +35,12 @@ jobs:
         run: |
           # 检查包是否已经存在
           echo "Checking if packages already exist on npm..."
-          if npm view waterfall-component-vue2@${{ github.ref_name }} version >/dev/null 2>&1; then
-            echo "waterfall-component-vue2 version ${{ github.ref_name }} already exists"
+          if npm view waterfall-component-vue2@${GITHUB_REF_NAME#v} version >/dev/null 2>&1; then
+            echo "waterfall-component-vue2 version ${GITHUB_REF_NAME#v} already exists"
             exit 1
           fi
-          if npm view waterfall-component-vue3@${{ github.ref_name }} version >/dev/null 2>&1; then
-            echo "waterfall-component-vue3 version ${{ github.ref_name }} already exists"
+          if npm view waterfall-component-vue3@${GITHUB_REF_NAME#v} version >/dev/null 2>&1; then
+            echo "waterfall-component-vue3 version ${GITHUB_REF_NAME#v} already exists"
             exit 1
           fi
           
@@ -66,7 +66,7 @@ jobs:
       - name: Create GitHub Release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}  # Changed from secrets.GITHUB_TOKEN
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
