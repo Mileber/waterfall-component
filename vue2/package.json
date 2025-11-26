@@ -23,11 +23,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/derya/zyt-waterfall.git"
+    "url": "https://github.com/Mileber/waterfall-component.git"
   },
-  "homepage": "https://gitlab.com/derya/zyt-waterfall#readme",
+  "homepage": "https://github.com/Mileber/waterfall-component#readme",
   "bugs": {
-    "url": "https://gitlab.com/derya/zyt-waterfall/issues"
+    "url": "https://github.com/Mileber/waterfall-component/issues"
   },
   "peerDependencies": { 
     "vue": "^2.6.0" 
