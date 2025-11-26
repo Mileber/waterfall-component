@@ -1,16 +1,28 @@
-# zyt-waterfall
+# waterfall-component [![npm](https://img.shields.io/npm/v/waterfall-component-vue2)](https://www.npmjs.com/package/waterfall-component-vue2) [![npm](https://img.shields.io/npm/v/waterfall-component-vue3)](https://www.npmjs.com/package/waterfall-component-vue3)
 
-一个支持横向和纵向布局的瀑布流公共组件，同时提供 Vue2 与 Vue3 两个版本。
+一个支持横向和纵向布局的高性能瀑布流公共组件，同时提供 Vue2 与 Vue3 两个版本。
 
 ## 功能特性
 
-- 横向（Justified）与纵向（Masonry）两种布局
-- 虚拟滚动，仅渲染视窗附近元素
-- 图片尺寸缓存与懒加载支持
-- 自定义插槽渲染内容
-- 可配置参数（`rowHeight`/`columnWidth`、`gutter`、`maxItems` 等）
-- 自动加载更多（`IntersectionObserver` 或滚动兜底）
-- 事件：`render-start`/`render-end`/`resize`/`error`/`load-more`
+- 🔄 横向（Justified）与纵向（Masonry）两种布局
+- ⚡ 虚拟滚动，仅渲染视窗附近元素
+- 🖼️ 图片尺寸缓存与懒加载支持
+- 🎨 自定义插槽渲染内容
+- ⚙️ 可配置参数（`rowHeight`/`columnWidth`、`gutter`、`maxItems` 等）
+- 📜 自动加载更多（`IntersectionObserver` 或滚动兜底）
+- 🔔 事件：`render-start`/`render-end`/`resize`/`error`/`load-more`
+
+## 安装
+
+### Vue2 版本
+```bash
+npm install waterfall-component-vue2
+```
+
+### Vue3 版本
+```bash
+npm install waterfall-component-vue3
+```
 
 ## 安装与使用
 
@@ -64,12 +76,31 @@ createApp(App).component('WaterfallComponent', WaterfallComponent)
 
 示例通过 Import Map 方式映射 `vue` 并从 `dist` 引入组件 ESM 文件：
 
-```html
+```
 <script type="importmap">{ "imports": { "vue": "https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.js" } }</script>
 <script type="module">
   import { createApp } from 'vue'
   import WaterfallComponent from './vue3/dist/index.esm.js'
   createApp({ components: { WaterfallComponent } }).mount('#app')
+</script>
+```
+
+#### CDN 引入
+
+对于 Vue2：
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/waterfall-component-vue2/dist/index.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/waterfall-component-vue2/dist/index.umd.js"></script>
+```
+
+对于 Vue3：
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/waterfall-component-vue3/dist/index.css" />
+<script type="module">
+  import { createApp } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.js'
+  import WaterfallComponent from 'https://cdn.jsdelivr.net/npm/waterfall-component-vue3/dist/index.esm.js'
+  // 使用组件
 </script>
 ```
 
@@ -182,6 +213,11 @@ methods: {
 }
 ```
 
+## 本地预览
+
+- Vue3 示例：`npm run preview:vue3`，浏览 `http://127.0.0.1:5173/examples/vue3/index.html`
+- Vue2 示例：`npm run preview:vue2`，浏览 `http://127.0.0.1:5174/examples/vue2/index.html`
+
 ## 构建
 
 - `npm run build:vue2`
@@ -191,10 +227,19 @@ methods: {
 
 - `npm run test`
 
-## 本地预览
+## 贡献
 
-- Vue3 示例：`npm run preview:vue3`，浏览 `http://127.0.0.1:5173/examples/vue3/index.html`
-- Vue2 示例：`npm run preview:vue2`，浏览 `http://127.0.0.1:5174/examples/vue2/index.html`
+欢迎提交 Issue 或 Pull Request 来帮助改进这个项目。
+
+1. Fork 项目
+2. 创建您的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交您的更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启一个 Pull Request
+
+## 许可证
+
+本项目采用 MIT 许可证。详情请见 [LICENSE](LICENSE) 文件。
 
 ## 在业务项目中安装
 
