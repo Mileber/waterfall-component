@@ -1,33 +1,34 @@
 {
-  "name": "waterfall-component",
+  "name": "zyt-waterfall",
+  "private": true,
   "version": "0.1.0",
-  "description": "高性能瀑布流布局组件，支持 Vue2 与 Vue3",
+  "type": "module",
   "workspaces": [
     "vue2",
-    "vue3"
+    "vue3",
+    "examples/*"
   ],
   "scripts": {
-    "clean": "rimraf vue2/dist vue3/dist",
-    "build": "npm run clean && npm run build:vue2 && npm run build:vue3",
+    "build": "npm run build:vue2 && npm run build:vue3",
     "build:vue2": "rollup -c rollup.vue2.config.js",
     "build:vue3": "rollup -c rollup.vue3.config.js",
-    "preview:vue2": "concurrently \"npm run build:vue2\" \"http-server examples/vue2 -p 5174 --cors\"",
-    "preview:vue3": "concurrently \"npm run build:vue3\" \"http-server examples/vue3 -p 5173 --cors\"",
+    "build:examples": "node scripts/build-examples.js",
     "test": "vitest run",
-    "pkg:fix": "npm pkg fix"
+    "preview:vue3": "npm run build:examples && http-server examples/vue3 -p 5173",
+    "preview:vue2": "npm run build:examples && http-server examples/vue2 -p 5174"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-typescript": "^11.1.5",
-    "@vue/test-utils": "^2.4.1",
-    "concurrently": "^8.2.2",
+    "@rollup/plugin-typescript": "^11.1.6",
     "http-server": "^14.1.1",
-    "rimraf": "^5.0.5",
-    "rollup": "^3.29.4",
+    "jsdom": "^27.2.0",
+    "rollup": "^3.29.0",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-vue": "^6.0.0",
-    "typescript": "^5.3.3",
-    "vitest": "^1.2.1"
+    "vue-template-compiler": "^2.6.14",
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.4",
+    "vitest": "^1.6.0"
   }
 }

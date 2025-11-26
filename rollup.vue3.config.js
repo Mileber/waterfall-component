@@ -1,4 +1,4 @@
-import vue from 'rollup-plugin-vue-v3'
+import vue from 'rollup-plugin-vue'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'

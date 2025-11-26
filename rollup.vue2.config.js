@@ -1,4 +1,4 @@
-import vue from 'rollup-plugin-vue-v2'
+import vue from 'rollup-plugin-vue'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import postcss from 'rollup-plugin-postcss'
@@ -8,7 +8,7 @@ export default {
   input: 'vue2/index.js',
   output: [
     { file: 'vue2/dist/index.js', format: 'cjs' },
-    { file: 'vue2/dist/index.esm.js', format: 'esm' },
+    { file: 'vue2/dist/index.esm.js', format: 'esm' }, 
     { 
       file: 'vue2/dist/index.umd.js', 
       format: 'umd', 
