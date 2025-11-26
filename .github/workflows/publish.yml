@@ -35,12 +35,12 @@ jobs:
         run: |
           # 检查包是否已经存在
           echo "Checking if packages already exist on npm..."
-          if npm view waterfall-component-vue2@${{ github.ref_name }} version >/dev/null 2>&1; then
-            echo "waterfall-component-vue2 version ${{ github.ref_name }} already exists"
+          if npm view waterfall-component-vue2@${GITHUB_REF_NAME#v} version >/dev/null 2>&1; then
+            echo "waterfall-component-vue2 version ${GITHUB_REF_NAME#v} already exists"
             exit 1
           fi
-          if npm view waterfall-component-vue3@${{ github.ref_name }} version >/dev/null 2>&1; then
-            echo "waterfall-component-vue3 version ${{ github.ref_name }} already exists"
+          if npm view waterfall-component-vue3@${GITHUB_REF_NAME#v} version >/dev/null 2>&1; then
+            echo "waterfall-component-vue3 version ${GITHUB_REF_NAME#v} already exists"
             exit 1
           fi
           
@@ -56,7 +56,7 @@ jobs:
       # Publish Vue3 package
       - name: Publish Vue3 package
         run: |
-          cd ../vue3
+          cd vue3
           echo "Publishing waterfall-component-vue3..."
           npm publish
         env:
