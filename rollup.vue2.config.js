@@ -19,7 +19,16 @@ export default {
     }
   ],
   plugins: [
-    vue({ css: true, compileTemplate: true }),
+    vue({ 
+      css: true, 
+      compileTemplate: true,
+      template: {
+        isProduction: true,
+        compilerOptions: {
+          mode: 'function'
+        }
+      }
+    }),
     postcss({ extract: true }),
     typescript({ tsconfig: false, include: ['shared/**/*.ts'], exclude: ['tests/**/*.ts'], compilerOptions: { target: 'es2018', lib: ['es2018','dom'] } }),
     resolve(),

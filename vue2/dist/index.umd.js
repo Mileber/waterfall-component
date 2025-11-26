@@ -42,8 +42,17 @@
                 const avail = containerWidth - gapsW;
                 const ratio = avail / totalW;
                 rowImgs.forEach(img => {
-                    const w = Math.round(img.calculatedWidth * ratio * 100) / 100;
-                    out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 });
+                    // 如果只有一个项目且使用stretch，则不改变其宽高比
+                    let w, h;
+                    if (rowImgs.length === 1 && align === 'stretch') {
+                        w = img.calculatedWidth;
+                        h = rowHeight;
+                    }
+                    else {
+                        w = Math.round(img.calculatedWidth * ratio * 100) / 100;
+                        h = rowHeight;
+                    }
+                    out.push({ ...img, width: w, height: h, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio });
                     left += w + gap;
                 });
             }
@@ -57,7 +66,8 @@
                 else if (fillRatio < minRowFillRatio && !hasMore) {
                     rowImgs.forEach(img => {
                         const w = Math.round(img.calculatedWidth * 100) / 100;
-                        out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 });
+                        // 使用计算后的宽高比而不是原始宽高比
+                        out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio });
                         left += w + gap;
                     });
                 }
@@ -66,8 +76,17 @@
                         const avail2 = containerWidth - gapsW;
                         const ratio2 = avail2 / totalW;
                         rowImgs.forEach(img => {
-                            const w = Math.round(img.calculatedWidth * ratio2 * 100) / 100;
-                            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 });
+                            // 如果只有一个项目且使用stretch，则不改变其宽高比
+                            let w, h;
+                            if (rowImgs.length === 1) {
+                                w = img.calculatedWidth;
+                                h = rowHeight;
+                            }
+                            else {
+                                w = Math.round(img.calculatedWidth * ratio2 * 100) / 100;
+                                h = rowHeight;
+                            }
+                            out.push({ ...img, width: w, height: h, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio });
                             left += w + gap;
                         });
                     }
@@ -76,14 +95,16 @@
                         left = Math.round(((containerWidth - rowPixel) / 2) * 100) / 100;
                         rowImgs.forEach(img => {
                             const w = Math.round(img.calculatedWidth * 100) / 100;
-                            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 });
+                            // 使用计算后的宽高比而不是原始宽高比
+                            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio });
                             left += w + gap;
                         });
                     }
                     else {
                         rowImgs.forEach(img => {
                             const w = Math.round(img.calculatedWidth * 100) / 100;
-                            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 });
+                            // 使用计算后的宽高比而不是原始宽高比
+                            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio });
                             left += w + gap;
                         });
                     }
@@ -116,7 +137,9 @@
                 }
             }
             const img = images[i];
-            const ar = img.width / img.height;
+            let ar = img.width / img.height;
+            // Apply aspect ratio clamping for masonry as well
+            // 注意：这里的 clampAspectRatio 参数应该从函数参数中获取，但当前函数签名没有该参数，因此我们暂时不处理
             const h = Math.round((columnWidth / ar) * 100) / 100;
             const left = colIndex * (columnWidth + gap);
             const top = heights[colIndex];
@@ -429,91 +452,17 @@
     const __vue_script__ = script;
 
     /* template */
-    var __vue_render__ = function () {
-      var _vm = this;
-      var _h = _vm.$createElement;
-      var _c = _vm._self._c || _h;
-      return _c(
-        "div",
-        {
-          staticClass: "wf-container",
-          style: { width: _vm.widthStyle, height: _vm.heightStyle },
-        },
-        [
-          _c(
-            "div",
-            { staticClass: "wf-wrapper" },
-            [
-              _vm._t("header"),
-              _vm._v(" "),
-              _c(
-                "div",
-                { ref: "container", staticClass: "wf", attrs: { role: "list" } },
-                _vm._l(_vm.visibleItems, function (item, index) {
-                  return _c(
-                    "div",
-                    {
-                      key: _vm.itemKey(item, index),
-                      staticClass: "wf-item",
-                      style: {
-                        width: item.width + "px",
-                        height: item.height + "px",
-                        top: item.top + "px",
-                        left: item.left + "px",
-                      },
-                      attrs: { role: "listitem" },
-                    },
-                    [
-                      _vm._t(
-                        "default",
-                        function () {
-                          return [
-                            item.cover
-                              ? _c("img", {
-                                  attrs: {
-                                    src: item.cover,
-                                    alt: item.title || "",
-                                    loading: "lazy",
-                                  },
-                                })
-                              : _vm._e(),
-                          ]
-                        },
-                        { item: item, index: index }
-                      ),
-                    ],
-                    2
-                  )
-                }),
-                0
-              ),
-              _vm._v(" "),
-              _c("div", { ref: "sentinel", staticClass: "wf-sentinel" }),
-              _vm._v(" "),
-              _vm.loading
-                ? _c("div", { staticClass: "wf-loading" }, [_vm._v("加载中")])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.noMore
-                ? _c("div", { staticClass: "wf-no-more" }, [_vm._v("没有更多")])
-                : _vm._e(),
-            ],
-            2
-          ),
-        ]
-      )
-    };
+    var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"wf-container",style:({ width: _vm.widthStyle, height: _vm.heightStyle })},[_c('div',{staticClass:"wf-wrapper"},[_vm._t("header"),_vm._v(" "),_c('div',{ref:"container",staticClass:"wf",attrs:{"role":"list"}},_vm._l((_vm.visibleItems),function(item,index){return _c('div',{key:_vm.itemKey(item, index),staticClass:"wf-item",style:({ width: item.width + 'px', height: item.height + 'px', top: item.top + 'px', left: item.left + 'px' }),attrs:{"role":"listitem"}},[_vm._t("default",function(){return [(item.cover)?_c('img',{attrs:{"src":item.cover,"alt":item.title || '',"loading":"lazy"}}):_vm._e()]},{"item":item,"index":index})],2)}),0),_vm._v(" "),_c('div',{ref:"sentinel",staticClass:"wf-sentinel"}),_vm._v(" "),(_vm.loading)?_c('div',{staticClass:"wf-loading"},[_vm._v("加载中")]):_vm._e(),_vm._v(" "),(_vm.noMore)?_c('div',{staticClass:"wf-no-more"},[_vm._v("没有更多")]):_vm._e()],2)])};
     var __vue_staticRenderFns__ = [];
-    __vue_render__._withStripped = true;
 
       /* style */
       const __vue_inject_styles__ = function (inject) {
         if (!inject) return
-        inject("data-v-7307df2e_0", { source: "\n.wf-container[data-v-7307df2e]{ width:100%; position:relative\n}\n.wf-wrapper[data-v-7307df2e]{ position:relative; width:100%\n}\n.wf[data-v-7307df2e]{ position:relative; width:100%\n}\n.wf-item[data-v-7307df2e]{ position:absolute; box-shadow:var(--wf-shadow, 0 2px 8px rgba(0,0,0,0.1)); transition:transform .3s ease, box-shadow .3s ease; z-index:1; box-sizing:content-box; margin:0; padding:0;\n}\n.wf-item[data-v-7307df2e]:hover{ transform:translateY(-5px); box-shadow:var(--wf-shadow-hover, 0 5px 20px rgba(0,0,0,0.2)); z-index:10\n}\n.wf-item img[data-v-7307df2e]{ width:100%; height:100%; object-fit:cover; display:block\n}\n.wf-loading[data-v-7307df2e]{ display:flex; justify-content:center; align-items:center; padding:20px 0; color:#666; font-size:14px\n}\n.wf-no-more[data-v-7307df2e]{ display:flex; justify-content:center; align-items:center; padding:20px 0; text-align:center; font-size:12px; line-height:1.6; color:#aaa\n}\n.wf-sentinel[data-v-7307df2e]{ position:absolute; bottom:0; width:100%; height:1px\n}\n", map: {"version":3,"sources":["D:\\derya\\projects\\gitlab\\zyt-waterfall\\vue2\\src\\WaterfallComponent.vue"],"names":[],"mappings":";AAiKA,gCAAA,UAAA,EAAA;AAAA;AACA,8BAAA,iBAAA,EAAA;AAAA;AACA,sBAAA,iBAAA,EAAA;AAAA;AACA,2BAAA,iBAAA,EAAA,sDAAA,EAAA,kDAAA,EAAA,SAAA,EAAA,sBAAA,EAAA,QAAA,EAAA,SAAA;AAAA;AACA,iCAAA,0BAAA,EAAA,6DAAA,EAAA;AAAA;AACA,+BAAA,UAAA,EAAA,WAAA,EAAA,gBAAA,EAAA;AAAA;AACA,8BAAA,YAAA,EAAA,sBAAA,EAAA,kBAAA,EAAA,cAAA,EAAA,UAAA,EAAA;AAAA;AACA,8BAAA,YAAA,EAAA,sBAAA,EAAA,kBAAA,EAAA,cAAA,EAAA,iBAAA,EAAA,cAAA,EAAA,eAAA,EAAA;AAAA;AACA,+BAAA,iBAAA,EAAA,QAAA,EAAA,UAAA,EAAA;AAAA","file":"WaterfallComponent.vue","sourcesContent":["<template>\n  <div class=\"wf-container\" :style=\"{ width: widthStyle, height: heightStyle }\">\n    <div class=\"wf-wrapper\">\n      <slot name=\"header\"></slot>\n      <div class=\"wf\" ref=\"container\" role=\"list\">\n        <div\n          class=\"wf-item\"\n          v-for=\"(item, index) in visibleItems\"\n          :key=\"itemKey(item, index)\"\n          :style=\"{ width: item.width + 'px', height: item.height + 'px', top: item.top + 'px', left: item.left + 'px' }\"\n          role=\"listitem\"\n        >\n          <slot :item=\"item\" :index=\"index\">\n            <img v-if=\"item.cover\" :src=\"item.cover\" :alt=\"item.title || ''\" loading=\"lazy\" />\n          </slot>\n        </div>\n      </div>\n      <div ref=\"sentinel\" class=\"wf-sentinel\"></div>\n      <div class=\"wf-loading\" v-if=\"loading\">加载中</div>\n      <div class=\"wf-no-more\" v-if=\"noMore\">没有更多</div>\n    </div>\n  </div>\n</template>\n<script>\nimport { justified, masonryVertical, filterVisible } from '../../shared/layout.ts'\nexport default {\n  name: 'WaterfallComponent',\n  props: {\n    items: { type: Array, default: () => [] },\n    direction: { type: String, default: 'horizontal' },\n    maxItems: { type: Number, default: 0 },\n    rowHeight: { type: Number, default: 200 },\n    columnWidth: { type: Number, default: 200 },\n    gutter: { type: Number, default: 12 },\n    autoLoad: { type: Boolean, default: true },\n    hasMore: { type: Boolean, default: true },\n    width: { type: [Number, String] },\n    height: { type: [Number, String] },\n    itemKey: { type: Function, default: (item, index) => item && (item.id || item.cover || index) },\n    itemsPerPage: { type: Number, default: 10 },\n    maxRowsPerRender: { type: Number, default: 5 },\n    maxColumns: { type: Number, default: 0 },\n    overscan: { type: Number, default: 2 },\n    bufferFactor: { type: Number, default: 2 },\n    minRowFillRatio: { type: Number, default: 0.7 },\n    alignLastRow: { type: String, default: 'stretch' },\n    clampAspectMin: { type: Number, default: 0 },\n    clampAspectMax: { type: Number },\n    ioRoot: { type: [String, Object], default: null },\n    ioRootMargin: { type: String, default: '0px' },\n    ioThreshold: { type: [Number, Array], default: 0 },\n    fixedColumns: { type: Boolean, default: false },\n    maxImageConcurrency: { type: Number, default: 4 }\n  },\n  data(){\n    return {\n      layoutItems: [],\n      loading: false,\n      currentPage: 0,\n      containerWidth: 0,\n      cache: {},\n      partialRow: [],\n      partialTop: 0,\n      observer: null,\n      scrollHandler: null,\n      scrollTarget: null,\n      resizeHandler: null,\n      viewportTop: 0,\n      viewportBottom: 0,\n      lastItemsCount: 0,\n      allLoadedInternal: false,\n      pendingImages: new Set()\n    }\n  },\n  computed: {\n    widthStyle(){ return this.width ? (typeof this.width === 'number' ? this.width + 'px' : this.width) : '' },\n    heightStyle(){ return this.height ? (typeof this.height === 'number' ? this.height + 'px' : this.height) : '' },\n    noMore(){ return this.allLoadedInternal || !this.hasMore },\n    visibleItems(){\n      const buf = this.rowHeight * this.bufferFactor\n      const top = this.viewportTop - buf\n      const bottom = this.viewportBottom + buf\n      return filterVisible(this.layoutItems, top, bottom, 0)\n    }\n  },\n  mounted(){\n    this.measure()\n    this.initObservers()\n    this.initScrollListener()\n    this.renderIfNeeded()\n    this.$nextTick(() => this.updateViewport())\n  },\n  beforeDestroy(){\n    if (this.resizeHandler) window.removeEventListener('resize', this.resizeHandler)\n    if (this.scrollHandler){ if (this.scrollTarget) this.scrollTarget.removeEventListener('scroll', this.scrollHandler); else window.removeEventListener('scroll', this.scrollHandler) }\n    if (this.observer) this.observer.disconnect()\n  },\n  watch: {\n    items: {\n      handler(newList){\n        if (newList.length < this.lastItemsCount){ this.reset(); this.renderIfNeeded(); return }\n        if (newList.length > this.lastItemsCount){ this.allLoadedInternal = false; this.renderIfNeeded() }\n      },\n      deep: true\n    },\n    hasMore(){ if (!this.hasMore) this.allLoadedInternal = true }\n  },\n  methods: {\n    debounce(fn, wait){ let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), wait) } },\n    measure(){ const c = this.$refs.container; if (c) this.containerWidth = c.offsetWidth; if (!this.resizeHandler){ this.resizeHandler = this.debounce(() => { const had = this.layoutItems.length > 0; this.containerWidth = this.$refs.container ? this.$refs.container.offsetWidth : this.containerWidth; if (had){ const prev = this.items.slice(0, this.currentPage * this.itemsPerPage); this.reset(); this.$nextTick(() => { this.appendItems(prev) }) } this.$emit('resize', { width: this.containerWidth }) }, 150); window.addEventListener('resize', this.resizeHandler) } },\n    initObservers(){ if (this.autoLoad){ if (window.IntersectionObserver){ const options = { root: typeof this.ioRoot === 'string' ? document.querySelector(this.ioRoot) : this.ioRoot, rootMargin: this.ioRootMargin, threshold: this.ioThreshold }; this.observer = new IntersectionObserver((es) => { es.forEach(e => { if (e.isIntersecting) this.tryLoadMore() }) }, options); const ref = this.$refs.sentinel; const nodes = Array.isArray(ref) ? ref : [ref]; nodes.forEach(el => { if (el) this.observer.observe(el) }) } else { this.scrollHandler = this.debounce(() => { this.tryLoadMore() }, 200); const root = typeof this.ioRoot === 'string' ? document.querySelector(this.ioRoot) : this.ioRoot; const target = root || window; target.addEventListener('scroll', this.scrollHandler) } } },\n    initScrollListener(){ const onScroll = this.debounce(() => this.updateViewport(), 50); const root = typeof this.ioRoot === 'string' ? document.querySelector(this.ioRoot) : this.ioRoot; const target = root || window; target.addEventListener('scroll', onScroll); this.scrollHandler = onScroll; this.scrollTarget = target },\n    updateViewport(){\n      const root = typeof this.ioRoot === 'string' ? document.querySelector(this.ioRoot) : this.ioRoot\n      const st = root ? root.scrollTop : (window.pageYOffset || document.documentElement.scrollTop)\n      const wh = root ? root.clientHeight : window.innerHeight\n      this.viewportTop = st\n      this.viewportBottom = st + wh\n      if (this.autoLoad && !this.loading && !this.noMore){\n        const margin = this.parseMargin(this.ioRootMargin)\n        const target = root || document.documentElement\n        const sh = target.scrollHeight || 0\n        if ((st + wh + margin.bottom) >= sh) this.tryLoadMore()\n      }\n    },\n    parseMargin(str){ if (!str) return { top:0,right:0,bottom:0,left:0 }; const parts = String(str).split(/\\s+/).map(s => parseFloat(s)||0); const [t=0,r=0,b=r,l=r] = parts; return { top:t, right:r, bottom:b, left:l } },\n  \n    tryLoadMore(){ if (this.loading) return; if (this.noMore) return; this.$emit('render-start'); this.$emit('load-more') },\n    reset(){ this.layoutItems = []; this.loading = false; this.currentPage = 0; this.partialRow = []; this.partialTop = 0; this.lastItemsCount = 0; this.allLoadedInternal = false; if (this.$refs.container) this.$refs.container.style.height = 'auto' },\n    renderIfNeeded(){ const start = this.currentPage * this.itemsPerPage; const next = this.items.slice(start, start + this.itemsPerPage); if (next.length === 0){ this.allLoadedInternal = true; return } this.appendItems(next); this.currentPage++; this.lastItemsCount = Math.max(this.lastItemsCount, start + next.length) },\n    appendItems(list){ this.loading = true; const run = (tasks, limit) => { const out = []; let idx = 0; return new Promise(resolve => { const next = () => { if (idx >= tasks.length){ resolve(out); return } const i = idx++; this.dimensions(tasks[i]).then(v => { out.push(v); next() }).catch(() => { next() }) }; const n = Math.max(1, limit); for (let k = 0; k < n; k++) next() }) }\n      run(list, this.maxImageConcurrency).then(res => { const startTop = this.partialRow.length > 0 ? this.partialTop : this.currentMaxHeight(); const combined = this.partialRow.length > 0 ? this.partialRow.concat(res) : res; let layouts = []\n      if (this.direction === 'vertical') {\n        const contW = this.containerWidth || 1140\n        const cols = Math.max(1, Math.floor((contW + this.gutter) / (this.columnWidth + this.gutter)))\n        const columns = this.fixedColumns ? (this.maxColumns ? Math.max(1, this.maxColumns) : cols) : (this.maxColumns ? Math.min(cols, this.maxColumns) : cols)\n        const baseHeights = Array(columns).fill(startTop)\n        for (let i = 0; i < this.layoutItems.length; i++){\n          const it = this.layoutItems[i]\n          const col = Math.floor(parseFloat(it.left) / (this.columnWidth + this.gutter))\n          if (!isNaN(col) && col >= 0 && col < columns){\n            const bottomNext = parseFloat(it.top) + parseFloat(it.height) + this.gutter\n            if (!isNaN(bottomNext)) baseHeights[col] = bottomNext\n          }\n        }\n        layouts = masonryVertical(combined, contW, this.columnWidth, this.gutter, baseHeights, this.maxColumns || null, this.fixedColumns)\n      } else {\n        layouts = justified(combined, this.containerWidth || 1140, this.rowHeight, this.gutter, startTop, this.maxRowsPerRender, this.maxItems || null, this.hasMore, this.minRowFillRatio, this.alignLastRow, { min: this.clampAspectMin || 0, max: this.clampAspectMax })\n      }\n      const placed = new Set(layouts.map(it => it.id || it.cover))\n      const leftover = combined.filter(it => { const k = it.id || it.cover; return !placed.has(k) })\n      this.layoutItems = this.layoutItems.concat(layouts); if (layouts.length > 0){ if (this.$refs.container) this.$refs.container.style.height = this.currentMaxHeight() + 'px' }\n      this.partialRow = leftover\n      this.partialTop = this.currentMaxHeight()\n      this.loading = false; this.$nextTick(() => { this.updateViewport(); this.$emit('render-end') }) }).catch(() => { this.loading = false }) },\n    dimensions(item){ if (item && item.width && item.height){ return Promise.resolve({ ...item, width: parseInt(item.width), height: parseInt(item.height) }) } const k = (item && (item.id || item.cover)) || Math.random().toString(36).slice(2); const c = this.cache[k]; if (c) return Promise.resolve({ ...item, width: c.width, height: c.height }); if (typeof Image === 'undefined'){ return Promise.resolve({ ...item, width: 384, height: 216 }) } return new Promise(resolve => { const img = new Image(); img.onload = () => { this.cache[k] = { width: img.naturalWidth, height: img.naturalHeight }; resolve({ ...item, width: img.naturalWidth, height: img.naturalHeight }) }; img.onerror = () => { this.$emit('error', { item }); this.cache[k] = { width: 384, height: 216 }; resolve({ ...item, width: 384, height: 216 }) }; img.src = item.cover }) },\n    currentMaxHeight(){ let m = 0; this.layoutItems.forEach(it => { const t = parseFloat(it.top); const h = parseFloat(it.height); if (!isNaN(t) && !isNaN(h)) m = Math.max(m, t + h) }); return this.layoutItems.length > 0 ? Math.round((m + this.gutter) * 100) / 100 : 0 }\n  }\n}\n</script>\n<style scoped>\n.wf-container{ width:100%; position:relative }\n.wf-wrapper{ position:relative; width:100% }\n.wf{ position:relative; width:100% }\n.wf-item{ position:absolute; box-shadow:var(--wf-shadow, 0 2px 8px rgba(0,0,0,0.1)); transition:transform .3s ease, box-shadow .3s ease; z-index:1; box-sizing:content-box; margin:0; padding:0; }\n.wf-item:hover{ transform:translateY(-5px); box-shadow:var(--wf-shadow-hover, 0 5px 20px rgba(0,0,0,0.2)); z-index:10 }\n.wf-item img{ width:100%; height:100%; object-fit:cover; display:block }\n.wf-loading{ display:flex; justify-content:center; align-items:center; padding:20px 0; color:#666; font-size:14px }\n.wf-no-more{ display:flex; justify-content:center; align-items:center; padding:20px 0; text-align:center; font-size:12px; line-height:1.6; color:#aaa }\n.wf-sentinel{ position:absolute; bottom:0; width:100%; height:1px }\n</style>\n"]}, media: undefined });
+        inject("data-v-c947f7aa_0", { source: ".wf-container[data-v-c947f7aa]{width:100%;position:relative}.wf-wrapper[data-v-c947f7aa]{position:relative;width:100%}.wf[data-v-c947f7aa]{position:relative;width:100%}.wf-item[data-v-c947f7aa]{position:absolute;box-shadow:var(--wf-shadow,0 2px 8px rgba(0,0,0,.1));transition:transform .3s ease,box-shadow .3s ease;z-index:1;box-sizing:content-box;margin:0;padding:0}.wf-item[data-v-c947f7aa]:hover{transform:translateY(-5px);box-shadow:var(--wf-shadow-hover,0 5px 20px rgba(0,0,0,.2));z-index:10}.wf-item img[data-v-c947f7aa]{width:100%;height:100%;object-fit:cover;display:block}.wf-loading[data-v-c947f7aa]{display:flex;justify-content:center;align-items:center;padding:20px 0;color:#666;font-size:14px}.wf-no-more[data-v-c947f7aa]{display:flex;justify-content:center;align-items:center;padding:20px 0;text-align:center;font-size:12px;line-height:1.6;color:#aaa}.wf-sentinel[data-v-c947f7aa]{position:absolute;bottom:0;width:100%;height:1px}", map: undefined, media: undefined });
 
       };
       /* scoped */
-      const __vue_scope_id__ = "data-v-7307df2e";
+      const __vue_scope_id__ = "data-v-c947f7aa";
       /* module identifier */
       const __vue_module_identifier__ = undefined;
       /* functional template */

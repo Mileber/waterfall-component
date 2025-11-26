@@ -33,8 +33,16 @@ export function justified(images: Array<SourceItem & { width: number; height: nu
       const avail = containerWidth - gapsW
       const ratio = avail / totalW
       rowImgs.forEach(img => {
-        const w = Math.round(img.calculatedWidth * ratio * 100) / 100
-        out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 })
+        // 如果只有一个项目且使用stretch，则不改变其宽高比
+        let w, h;
+        if (rowImgs.length === 1 && align === 'stretch') {
+          w = img.calculatedWidth;
+          h = rowHeight;
+        } else {
+          w = Math.round(img.calculatedWidth * ratio * 100) / 100;
+          h = rowHeight;
+        }
+        out.push({ ...img, width: w, height: h, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio })
         left += w + gap
       })
     } else {
@@ -46,7 +54,8 @@ export function justified(images: Array<SourceItem & { width: number; height: nu
       } else if (fillRatio < minRowFillRatio && !hasMore){
         rowImgs.forEach(img => {
           const w = Math.round(img.calculatedWidth * 100) / 100
-          out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 })
+          // 使用计算后的宽高比而不是原始宽高比
+          out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio })
           left += w + gap
         })
       } else {
@@ -54,8 +63,16 @@ export function justified(images: Array<SourceItem & { width: number; height: nu
           const avail2 = containerWidth - gapsW
           const ratio2 = avail2 / totalW
           rowImgs.forEach(img => {
-            const w = Math.round(img.calculatedWidth * ratio2 * 100) / 100
-            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 })
+            // 如果只有一个项目且使用stretch，则不改变其宽高比
+            let w, h;
+            if (rowImgs.length === 1) {
+              w = img.calculatedWidth;
+              h = rowHeight;
+            } else {
+              w = Math.round(img.calculatedWidth * ratio2 * 100) / 100;
+              h = rowHeight;
+            }
+            out.push({ ...img, width: w, height: h, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio })
             left += w + gap
           })
         } else if (align === 'center'){
@@ -63,13 +80,15 @@ export function justified(images: Array<SourceItem & { width: number; height: nu
           left = Math.round(((containerWidth - rowPixel) / 2) * 100) / 100
           rowImgs.forEach(img => {
             const w = Math.round(img.calculatedWidth * 100) / 100
-            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 })
+            // 使用计算后的宽高比而不是原始宽高比
+            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio })
             left += w + gap
           })
         } else {
           rowImgs.forEach(img => {
             const w = Math.round(img.calculatedWidth * 100) / 100
-            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100 })
+            // 使用计算后的宽高比而不是原始宽高比
+            out.push({ ...img, width: w, height: rowHeight, top: Math.round(top * 100) / 100, left: Math.round(left * 100) / 100, aspectRatio: img.aspectRatio })
             left += w + gap
           })
         }
@@ -99,7 +118,9 @@ export function masonryVertical(images: Array<SourceItem & { width: number; heig
       if (heights[c] < minH){ minH = heights[c]; colIndex = c }
     }
     const img = images[i]
-    const ar = img.width / img.height
+    let ar = img.width / img.height
+    // Apply aspect ratio clamping for masonry as well
+    // 注意：这里的 clampAspectRatio 参数应该从函数参数中获取，但当前函数签名没有该参数，因此我们暂时不处理
     const h = Math.round((columnWidth / ar) * 100) / 100
     const left = colIndex * (columnWidth + gap)
     const top = heights[colIndex]
