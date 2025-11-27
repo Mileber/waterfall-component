@@ -32,7 +32,7 @@ export interface WaterfallProps {
   itemKey?: (item: WaterfallItem, index: number) => string | number;
 }
 
-import { VNode } from 'vue';
+import { VNode, RendererNode, RendererElement } from 'vue';
 
 export interface WaterfallEvents {
   'load-more': () => void;
@@ -66,7 +66,9 @@ declare const WaterfallComponent: import('vue').DefineComponent<
   WaterfallEvents,
   string,
   {},
-  WaterfallComponentSlots
+  WaterfallComponentSlots,
+  {},
+  {}
 >;
 export default WaterfallComponent;
 
