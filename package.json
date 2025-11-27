@@ -1,7 +1,7 @@
 {
   "name": "waterfall-component",
   "private": true,
-  "version": "",
+  "version": "0.1.14",
   "type": "module",
   "workspaces": [
     "vue2",
