@@ -49,10 +49,14 @@ export interface WaterfallComponentSlots {
 }
 
 export interface WaterfallComponent extends WaterfallProps, WaterfallEvents {
-  // 组件实例方法
   reset: () => void;
   renderIfNeeded: () => void;
   updateViewport: () => void;
+}
+
+export type WaterfallSlots = {
+  default: (props: { item: WaterfallItem, index: number }) => VNode[];
+  header: () => VNode[];
 }
 
 declare const WaterfallComponent: import('vue').DefineComponent<
@@ -64,10 +68,8 @@ declare const WaterfallComponent: import('vue').DefineComponent<
   {},
   {},
   WaterfallEvents,
-  string,
-  {},
-  WaterfallComponentSlots
->;
+  string
+> & import('vue').SlotsType<WaterfallSlots>;
 export default WaterfallComponent;
 
 export function install(app: import('vue').App): void;
