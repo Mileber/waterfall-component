@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var vue = require('vue');
 
 function justified(images, containerWidth, rowHeight, gap, startTop, maxRows, maxItems, hasMore, minRowFillRatio = 0.7, align = 'stretch', clampAspectRatio) {
@@ -350,7 +348,4 @@ script.render = render;
 script.__scopeId = "data-v-680562fa";
 script.__file = "vue3/src/WaterfallComponent.vue";
 
-function install(app){ if (install.installed) return; app.component('WaterfallComponent', script); }
-
-exports.default = script;
-exports.install = install;
+module.exports = script;

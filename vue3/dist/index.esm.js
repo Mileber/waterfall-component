@@ -346,6 +346,4 @@ script.render = render;
 script.__scopeId = "data-v-680562fa";
 script.__file = "vue3/src/WaterfallComponent.vue";
 
-function install(app){ if (install.installed) return; app.component('WaterfallComponent', script); }
-
-export { script as default, install };
+export { script as default };
